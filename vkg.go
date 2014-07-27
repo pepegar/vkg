@@ -11,7 +11,7 @@ type App struct {
 	Commands []commands.Command
 }
 
-func (a *App) Command(name string) *commands.Command {
+func (a *App) Dispatch(name string) *commands.Command {
 	for _, c := range a.Commands {
 		if c.HasName(name) {
 			return &c
@@ -30,7 +30,7 @@ func main() {
 	}
 
 	if len(os.Args) > 1 {
-		command := app.Command(os.Args[1])
+		command := app.Dispatch(os.Args[1])
 
 		if command != nil {
 			command.Action()
