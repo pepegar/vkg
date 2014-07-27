@@ -5,3 +5,7 @@ type Command struct {
 	Description string
 	Action      func()
 }
+
+func (c *Command) HasName(name string) bool {
+	return c.Name == name
+}
