@@ -3,30 +3,14 @@ package main
 import (
 	"fmt"
 	"os"
+
+	"github.com/pepegar/vkg-go/commands"
 )
 
-type Command struct {
-	Name        string
-	Description string
-	Action      func()
-}
-
 func main() {
-	commands := []Command{
-		Command{
-			Name:        "test",
-			Description: "test",
-			Action: func() {
-				println("asdf")
-			},
-		},
-		Command{
-			Name:        "test2",
-			Description: "test2",
-			Action: func() {
-				println("asdf2")
-			},
-		},
+	commands := []commands.Command{
+		commands.SearchCommand,
+		commands.InstallCommand,
 	}
 
 	if len(os.Args) > 1 {
