@@ -40,7 +40,7 @@ func GetJson(url string) ([]byte, error) {
 func ParsePluginsList(body []byte) (Response, error) {
 	var r Response
 
-	json.Unmarshal(body, &r)
+	parseJsonError := json.Unmarshal(body, &r)
 
-	return r, nil
+	return r, parseJsonError
 }

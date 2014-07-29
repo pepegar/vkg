@@ -1,4 +1,5 @@
 SHELL = /bin/bash
+PACKAGES := ./commands
 
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
@@ -9,6 +10,6 @@ $(app):
 	@go build
 
 test:
-	@echo NO TESTS!
+	@go test $(PACKAGES)
 
 .PHONY: clean $(app) run release test

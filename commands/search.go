@@ -16,13 +16,13 @@ var SearchCommand = Command{
 			json, jsonError := GetJson(url)
 
 			if nil != jsonError {
-				fmt.Println("error")
+				fmt.Println("invalid request")
 			}
 
-			response, parseError := ParsePluginsList(json)
+			response, parseJsonError := ParsePluginsList(json)
 
-			if nil != parseError {
-				fmt.Println("error")
+			if nil != parseJsonError {
+				fmt.Println("invalid json response")
 			}
 
 			for _, plugin := range response.Plugins {
