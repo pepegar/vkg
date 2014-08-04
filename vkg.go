@@ -26,7 +26,18 @@ func main() {
 		Commands: []commands.Command{
 			commands.SearchCommand,
 			commands.InstallCommand,
+			commands.UninstallCommand,
 		},
+	}
+
+	var usage = `
+
+Usage: vkg [command]
+
+Commands:
+`
+	for _, command := range app.Commands {
+		usage += "  " + command.Usage + " - " + command.Description + "\r\n"
 	}
 
 	if len(os.Args) > 1 {
@@ -38,7 +49,7 @@ func main() {
 			fmt.Println("command " + os.Args[1] + " does not exist")
 		}
 	} else {
-		fmt.Println("please, supply a valid command")
+		fmt.Println(usage)
 	}
 
 }

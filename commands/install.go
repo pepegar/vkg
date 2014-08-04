@@ -27,6 +27,7 @@ func Install(url string, name string) bool {
 var InstallCommand = Command{
 	Name:        "install",
 	Description: "Installs a package from vimawesome",
+	Usage:       "install <package>",
 	Action: func() {
 		config := config.GetVkgGonfig()
 		if len(os.Args) < 3 {
