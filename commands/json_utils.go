@@ -44,3 +44,11 @@ func ParsePluginsList(body []byte) (Response, error) {
 
 	return r, parseJsonError
 }
+
+func ParseSinglePlugin(body []byte) (PluginRecord, error) {
+	var p PluginRecord
+
+	parseJsonError := json.Unmarshal(body, &p)
+
+	return p, parseJsonError
+}
