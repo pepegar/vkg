@@ -5,9 +5,27 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"regexp"
+	"strings"
 
 	"github.com/pepegar/vkg-go/config"
 )
+
+func IsUserRepo(path string) bool {
+	match, _ := regexp.MatchString("^[a-z\\-\\.]*\\/[a-z\\-\\.]*$", path)
+
+	return match
+}
+
+func IsGithubUrl(path string) bool {
+	match, _ := regexp.MatchString("^github.com\\/[a-z\\-\\.]*\\/[a-z\\-\\.]*$", path)
+
+	return match
+}
+
+func IsVimawesomeSlug(param string) bool {
+	return (!IsGithubUrl(param) && !IsUserRepo(param))
+}
 
 func Install(url string, name string) bool {
 	config := config.GetVkgGonfig()
@@ -33,20 +51,38 @@ var InstallCommand = Command{
 		if len(os.Args) < 3 {
 			log.Fatal(config.Messages["provide_plugin_name"])
 		} else {
-			url := fmt.Sprintf(config.VimawesomePluginUrl, os.Args[2])
-			body, requestError := GetJson(url)
+			var slug string
+			var url string
 
-			if requestError != nil {
-				log.Fatal(config.Messages["request_error"])
-			} else {
-				plugin, parseError := ParseSinglePlugin(body)
+			param := os.Args[2]
 
-				if parseError != nil {
-					log.Fatal(parseError)
+			if IsUserRepo(param) {
+				parts := strings.Split(param, "/")
+				slug = parts[len(parts)-1]
+				url = "https://github.com/" + param
+			} else if IsGithubUrl(param) {
+				parts := strings.Split(param, "/")
+				slug = parts[len(parts)-1]
+				url = "https://" + param
+			} else if IsVimawesomeSlug(param) {
+				jsonUrl := fmt.Sprintf(config.VimawesomePluginUrl, param)
+				body, requestError := GetJson(jsonUrl)
+
+				if requestError != nil {
+					log.Fatal(config.Messages["request_error"])
 				} else {
-					Install(plugin.GithubUrl, plugin.Slug)
+					plugin, parseError := ParseSinglePlugin(body)
+
+					if parseError != nil {
+						log.Fatal(parseError)
+					} else {
+						url = plugin.GithubUrl
+						slug = plugin.Slug
+					}
 				}
 			}
+
+			Install(url, slug)
 		}
 	},
 }
