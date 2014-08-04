@@ -27,6 +27,7 @@ func main() {
 			commands.SearchCommand,
 			commands.InstallCommand,
 			commands.UninstallCommand,
+			commands.ListCommand,
 		},
 	}
 
