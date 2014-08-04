@@ -24,9 +24,11 @@ func GetVkgGonfig() *Config {
 	messages := make(map[string]string)
 	messages["plugin_already_installed"] = "plugin %s is already installed" + eol
 	messages["successfully_installed"] = "%s successfully installed" + eol
+	messages["successfully_deleted"] = "%s successfully deleted" + eol
 	messages["provide_plugin_name"] = "please, provide a plugin name" + eol
 	messages["request_error"] = "there was an error with the request" + eol
 	messages["parse_error"] = "there was an error parsing the response" + eol
+	messages["plugin_does_not_exist"] = "plugin %s does not exist" + eol
 
 	config := &Config{
 		PluginsPath:              usr.HomeDir + "/.vim/bundle/",
