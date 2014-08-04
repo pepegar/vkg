@@ -6,9 +6,10 @@ import (
 )
 
 type Config struct {
-	PluginsPath         string
-	VimawesomePluginUrl string
-	Messages            map[string]string
+	PluginsPath              string
+	VimawesomePluginUrl      string
+	VimawesomePluginQueryUrl string
+	Messages                 map[string]string
 }
 
 func GetVkgGonfig() *Config {
@@ -28,9 +29,10 @@ func GetVkgGonfig() *Config {
 	messages["parse_error"] = "there was an error parsing the response" + eol
 
 	config := &Config{
-		PluginsPath:         usr.HomeDir + "/.vim/bundle/",
-		VimawesomePluginUrl: "http://vimawesome.com/api/plugins/%s",
-		Messages:            messages,
+		PluginsPath:              usr.HomeDir + "/.vim/bundle/",
+		VimawesomePluginUrl:      "http://vimawesome.com/api/plugins/%s",
+		VimawesomePluginQueryUrl: "http://vimawesome.com/api/plugins?query=%s",
+		Messages:                 messages,
 	}
 
 	return config
