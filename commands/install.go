@@ -2,23 +2,25 @@ package commands
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
-	"os/exec"
 	"regexp"
 	"strings"
 
-	"github.com/pepegar/vkg-go/config"
+	"github.com/pepegar/vkg/config"
+	"github.com/pepegar/vkg/config/vkgrc"
+	"github.com/pepegar/vkg/utils"
 )
 
 func IsUserRepo(path string) bool {
-	match, _ := regexp.MatchString("^[a-z\\-\\.]*\\/[a-z\\-\\.]*$", path)
+	match, _ := regexp.MatchString("^[a-z\\-\\.]+\\/[a-z\\-\\.]+$", path)
 
 	return match
 }
 
 func IsGithubUrl(path string) bool {
-	match, _ := regexp.MatchString("^github.com\\/[a-z\\-\\.]*\\/[a-z\\-\\.]*$", path)
+	match, _ := regexp.MatchString("^github.com\\/[a-z\\-\\.]+\\/[a-z\\-\\.]+$", path)
 
 	return match
 }
@@ -27,29 +29,30 @@ func IsVimawesomeSlug(param string) bool {
 	return (!IsGithubUrl(param) && !IsUserRepo(param))
 }
 
-func Install(url string, name string) bool {
-	config := config.GetVkgGonfig()
-
-	cmd := exec.Command("git", "clone", url+".git", config.PluginsPath+name)
-	_, err := cmd.Output()
-
-	if err != nil {
-		fmt.Printf(config.Messages["plugin_already_installed"], name)
-		return false
-	}
-
-	fmt.Printf(config.Messages["successfully_installed"], name)
-	return true
-}
-
 var InstallCommand = Command{
 	Name:        "install",
 	Description: "Installs a package from vimawesome",
 	Usage:       "install <package>",
 	Action: func() {
-		config := config.GetVkgGonfig()
+		vkgConfig := config.GetVkgGonfig()
 		if len(os.Args) < 3 {
-			log.Fatal(config.Messages["provide_plugin_name"])
+			if config.VkgrcExists() {
+				vkgrcContents, err := ioutil.ReadFile(vkgConfig.VkgrcPath)
+
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				vkgrc := vkgrc.ParseVkgrc(vkgrcContents)
+
+				for _, plugin := range vkgrc.Plugins {
+					if err := utils.GitClone(plugin.Repository, vkgConfig.PluginsPath+plugin.Name, plugin.Branch); err == nil {
+						fmt.Printf(vkgConfig.Messages["successfully_installed"], plugin.Name)
+					} else {
+						fmt.Printf(vkgConfig.Messages["plugin_already_installed"], plugin.Name)
+					}
+				}
+			}
 		} else {
 			var slug string
 			var url string
@@ -65,11 +68,11 @@ var InstallCommand = Command{
 				slug = parts[len(parts)-1]
 				url = "https://" + param
 			} else if IsVimawesomeSlug(param) {
-				jsonUrl := fmt.Sprintf(config.VimawesomePluginUrl, param)
+				jsonUrl := fmt.Sprintf(vkgConfig.VimawesomePluginUrl, param)
 				body, requestError := GetJson(jsonUrl)
 
 				if requestError != nil {
-					log.Fatal(config.Messages["request_error"])
+					log.Fatal(vkgConfig.Messages["request_error"])
 				} else {
 					plugin, parseError := ParseSinglePlugin(body)
 
@@ -82,7 +85,11 @@ var InstallCommand = Command{
 				}
 			}
 
-			Install(url, slug)
+			if err := utils.GitClone(url, config.GetVkgGonfig().PluginsPath+slug, "master"); err == nil {
+				fmt.Printf(vkgConfig.Messages["successfully_installed"], slug)
+			} else {
+				fmt.Println(err)
+			}
 		}
 	},
 }

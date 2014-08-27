@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pepegar/vkg-go/config"
+	"github.com/pepegar/vkg/config"
 )
 
 var SearchCommand = Command{

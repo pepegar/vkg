@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/pepegar/vkg-go/config"
+	"github.com/pepegar/vkg/config"
 )
 
 var ListCommand = Command{

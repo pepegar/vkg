@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pepegar/vkg-go/commands"
+	"github.com/pepegar/vkg/commands"
 )
 
 type App struct {

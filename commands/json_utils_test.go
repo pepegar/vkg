@@ -3,7 +3,7 @@ package commands_test
 import (
 	"testing"
 
-	"github.com/pepegar/vkg-go/commands"
+	"github.com/pepegar/vkg/commands"
 )
 
 func TestParsePluginsList(t *testing.T) {
