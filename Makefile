@@ -1,12 +1,12 @@
 SHELL = /bin/bash
-PACKAGES := ./commands
+PACKAGES := ./commands ./config/vkgrc
 
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
 app = $(current_dir)
 
 
-$(app): 
+$(app):
 	@go build
 
 test:
