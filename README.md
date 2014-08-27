@@ -1,4 +1,4 @@
-[![Build Status](http://107.170.141.5/github.com/pepegar/vkg/status.svg?branch=master)](http://107.170.141.5/github.com/pepegar/vkg)))]]
+[![Build Status](http://107.170.141.5/github.com/pepegar/vkg/status.svg?branch=master)](http://107.170.141.5/github.com/pepegar/vkg)
 vkg
 ===
 
