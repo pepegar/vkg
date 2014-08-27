@@ -50,7 +50,7 @@ vkg search less
 #  * vim-less-back-to-december -
 #  * vim-less-cmd - Vim commands for working with Less css metalanguage)
 
-vkg search less-vim
+vkg install less-vim
 ```
 
 * list your plugins:
