@@ -2,14 +2,24 @@ package config
 
 import (
 	"log"
+	"os"
 	"os/user"
 )
 
 type Config struct {
 	PluginsPath              string
+	VkgrcPath                string
 	VimawesomePluginUrl      string
 	VimawesomePluginQueryUrl string
 	Messages                 map[string]string
+}
+
+func VkgrcExists() bool {
+	if _, err := os.Stat(GetVkgGonfig().VkgrcPath); err == nil {
+		return true
+	}
+
+	return false
 }
 
 func GetVkgGonfig() *Config {
@@ -32,6 +42,7 @@ func GetVkgGonfig() *Config {
 
 	config := &Config{
 		PluginsPath:              usr.HomeDir + "/.vim/bundle/",
+		VkgrcPath:                usr.HomeDir + "/.vkgrc",
 		VimawesomePluginUrl:      "http://vimawesome.com/api/plugins/%s",
 		VimawesomePluginQueryUrl: "http://vimawesome.com/api/plugins?query=%s",
 		Messages:                 messages,
