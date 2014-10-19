@@ -8,7 +8,6 @@ type VkgrcJSON struct {
 
 type VkgrcPlugin struct {
 	Repository string `json:"repository"`
-	Name       string `json:"name"`
 	Branch     string `json:"branch"`
 }
 

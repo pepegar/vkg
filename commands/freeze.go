@@ -2,6 +2,7 @@ package commands
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"sync"
 
@@ -16,7 +17,6 @@ func action() {
 
 	var wg sync.WaitGroup
 
-	//errors := make(chan error)
 	pluginsChan := make(chan vkgrc.VkgrcPlugin, len(files))
 
 	for _, file := range files {
@@ -29,12 +29,10 @@ func action() {
 
 			branch, _ := utils.Git.GetBranchName(fullyQualifiedPath)
 			repo, _ := utils.Git.GetRepository(fullyQualifiedPath)
-			name, _ := utils.Git.GetRepoName(fullyQualifiedPath)
 
 			plugin := vkgrc.VkgrcPlugin{
 				Branch:     branch,
 				Repository: repo,
-				Name:       name,
 			}
 
 			pluginsChan <- plugin
@@ -57,7 +55,7 @@ func action() {
 
 	a, _ := json.MarshalIndent(vkgrcFile, "", "  ")
 
-	println(string(a))
+	fmt.Println(string(a))
 }
 
 var FreezeCommand = Command{
