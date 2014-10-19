@@ -46,7 +46,7 @@ var InstallCommand = Command{
 				vkgrc := vkgrc.ParseVkgrc(vkgrcContents)
 
 				for _, plugin := range vkgrc.Plugins {
-					if err := utils.GitClone(plugin.Repository, vkgConfig.PluginsPath+plugin.Name, plugin.Branch); err == nil {
+					if err := utils.Git.Clone(plugin.Repository, vkgConfig.PluginsPath+plugin.Name, plugin.Branch); err == nil {
 						fmt.Printf(vkgConfig.Messages["successfully_installed"], plugin.Name)
 					} else {
 						fmt.Printf(vkgConfig.Messages["plugin_already_installed"], plugin.Name)
@@ -85,7 +85,7 @@ var InstallCommand = Command{
 				}
 			}
 
-			if err := utils.GitClone(url, config.GetVkgGonfig().PluginsPath+slug, "master"); err == nil {
+			if err := utils.Git.Clone(url, config.GetVkgGonfig().PluginsPath+slug, "master"); err == nil {
 				fmt.Printf(vkgConfig.Messages["successfully_installed"], slug)
 			} else {
 				fmt.Println(err)
