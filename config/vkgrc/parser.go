@@ -3,7 +3,7 @@ package vkgrc
 import "encoding/json"
 
 type VkgrcJSON struct {
-	Plugins []VkgrcPlugin
+	Plugins []VkgrcPlugin `json:"plugins"`
 }
 
 type VkgrcPlugin struct {
