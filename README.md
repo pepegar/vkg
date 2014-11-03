@@ -8,7 +8,7 @@ for Vim package.
 installation
 ------------
 First method, with ```go get```:
-```
+```bash
 go get github.com/pepegar/vkg
 ```
 
@@ -17,15 +17,17 @@ Second method, just search the latest release in the [releases page](https://git
 features
 --------
 * install from github url:
-```
+```bash
 vkg install github.com/tpope/fugitive
 ```
+
 * or from just an user and password
-```
+```bash
 vkg install tpope/fugitive
 ```
+
 * or better, search the vimawesome index to find the plugin you are looking for:
-```
+```bash
 vkg search less
 
 # Output:
@@ -54,11 +56,21 @@ vkg install less-vim
 ```
 
 * list your plugins:
-```
+```bash
 vkg list
 ```
 
 * uninstall them
-```
+```bash
 vkg uninstall fugitive
+```
+
+* generate a valid vkgrc file
+```bash
+vkg freeze
+```
+
+* install all plugins from vkgrc
+```
+vkg install
 ```
