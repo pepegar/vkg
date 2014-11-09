@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/pepegar/vkg/config"
 	"github.com/pepegar/vkg/config/vkgrc"
@@ -37,15 +38,28 @@ func installAllVkgrcPlugins() {
 		log.Fatal(err)
 	}
 
-	vkgrc := vkgrc.ParseVkgrc(vkgrcContents)
+	parsedVkgrc := vkgrc.ParseVkgrc(vkgrcContents)
+	var wg sync.WaitGroup
 
-	for _, plugin := range vkgrc.Plugins {
-		if err := utils.Git.Clone(plugin.Repository, plugin.Branch); err == nil {
-			fmt.Printf(vkgConfig.Messages["successfully_installed"], plugin.Repository)
-		} else {
-			fmt.Printf(vkgConfig.Messages["plugin_already_installed"], plugin.Repository)
-		}
+	for _, plugin := range parsedVkgrc.Plugins {
+
+		wg.Add(1)
+
+		go func(plugin vkgrc.VkgrcPlugin) {
+			defer wg.Done()
+
+			cloneError := utils.Git.Clone(plugin.Repository, plugin.Branch)
+
+			if cloneError == nil {
+				fmt.Printf(vkgConfig.Messages["successfully_installed"], plugin.Repository)
+			} else {
+				fmt.Printf(vkgConfig.Messages["plugin_already_installed"], plugin.Repository)
+			}
+		}(plugin)
 	}
+	wg.Wait()
+
+	fmt.Println("all plugins installed")
 }
 
 func installSinglePlugin(plugin string) {
