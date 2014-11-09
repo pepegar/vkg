@@ -11,7 +11,7 @@ import (
 	"github.com/pepegar/vkg/utils"
 )
 
-func action() {
+func actionFreeze() {
 	config := config.GetVkgGonfig()
 	files, _ := ioutil.ReadDir(config.PluginsPath)
 
@@ -62,5 +62,5 @@ var FreezeCommand = Command{
 	Name:        "freeze",
 	Usage:       "freeze",
 	Description: "output installed plugins in .vkgrc format",
-	Action:      action,
+	Action:      actionFreeze,
 }
