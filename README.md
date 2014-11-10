@@ -1,4 +1,4 @@
-[![Build Status](https://drone.io/github.com/pepegar/vkg/status.png)](https://drone.io/github.com/pepegar/vkg/latest)
+[![Build Status](https://travis-ci.org/pepegar/vkg.svg?branch=feature%2Ftesting)](https://travis-ci.org/pepegar/vkg)
 vkg
 ===
 
