@@ -1,5 +1,4 @@
 SHELL = /bin/bash
-PACKAGES := ./commands ./config/vkgrc
 
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
 current_dir := $(notdir $(patsubst %/,%,$(dir $(mkfile_path))))
@@ -10,6 +9,6 @@ $(app):
 	@go build
 
 test:
-	@go test $(PACKAGES)
+	@go test ./...
 
 .PHONY: clean $(app) run release test
