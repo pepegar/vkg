@@ -11,8 +11,7 @@ import (
 	"github.com/pepegar/vkg/utils"
 )
 
-func actionFreeze() {
-	config := config.GetVkgGonfig()
+func actionFreeze(config config.Config) {
 	files, _ := ioutil.ReadDir(config.PluginsPath)
 
 	var wg sync.WaitGroup

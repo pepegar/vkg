@@ -8,6 +8,12 @@ import (
 	"github.com/pepegar/vkg/config"
 )
 
+type Giter interface {
+	Clone(string, string) error
+	GetBranchName(string) (string, error)
+	GetRepository(string) (string, error)
+}
+
 type git struct{}
 
 func (g git) Clone(url string, branch string) error {

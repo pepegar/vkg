@@ -1,13 +1,17 @@
 package commands
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/pepegar/vkg/config"
+)
 
 func TestHasName(t *testing.T) {
 	c := Command{
 		Name:        "asdf",
 		Description: "asdf",
 		Usage:       "asdf",
-		Action: func() {
+		Action: func(vkgConfig config.Config) {
 		},
 	}
 

@@ -30,8 +30,7 @@ func IsVimawesomeSlug(plugin string) bool {
 	return (!IsGithubUrl(plugin) && !IsUserRepo(plugin))
 }
 
-func installAllVkgrcPlugins() {
-	vkgConfig := config.GetVkgGonfig()
+func InstallAllVkgrcPlugins(git utils.Giter, vkgConfig config.Config) {
 	vkgrcContents, err := ioutil.ReadFile(vkgConfig.VkgrcPath)
 
 	if err != nil {
@@ -48,7 +47,7 @@ func installAllVkgrcPlugins() {
 		go func(plugin vkgrc.VkgrcPlugin) {
 			defer wg.Done()
 
-			cloneError := utils.Git.Clone(plugin.Repository, plugin.Branch)
+			cloneError := git.Clone(plugin.Repository, plugin.Branch)
 
 			if cloneError == nil {
 				fmt.Printf(vkgConfig.Messages["successfully_installed"], plugin.Repository)
@@ -62,8 +61,7 @@ func installAllVkgrcPlugins() {
 	fmt.Println("all plugins installed")
 }
 
-func installSinglePlugin(plugin string) {
-	vkgConfig := config.GetVkgGonfig()
+func InstallPlugin(git utils.Giter, vkgConfig config.Config, plugin string) {
 	var slug string
 	var url string
 
@@ -93,19 +91,21 @@ func installSinglePlugin(plugin string) {
 		}
 	}
 
-	if err := utils.Git.Clone(url, "master"); err == nil {
+	if err := git.Clone(url, "master"); err == nil {
 		fmt.Printf(vkgConfig.Messages["successfully_installed"], slug)
 	} else {
 		fmt.Println(err)
 	}
 }
 
-func actionInstall() {
+func actionInstall(vkgConfig config.Config) {
+	git := utils.Git
+
 	if len(os.Args) < 3 && config.VkgrcExists() {
-		installAllVkgrcPlugins()
+		InstallAllVkgrcPlugins(git, vkgConfig)
 	} else {
 		plugin := os.Args[2]
-		installSinglePlugin(plugin)
+		InstallPlugin(git, vkgConfig, plugin)
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/pepegar/vkg/commands"
+	"github.com/pepegar/vkg/config"
 )
 
 type App struct {
@@ -44,9 +45,10 @@ Commands:
 
 	if len(os.Args) > 1 {
 		command := app.Dispatch(os.Args[1])
+		config := config.GetVkgGonfig()
 
 		if command != nil {
-			command.Action()
+			command.Action(*config)
 		} else {
 			fmt.Println("command " + os.Args[1] + " does not exist")
 		}
