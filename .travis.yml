@@ -13,4 +13,6 @@ go:
 
 script:
     - make test
+
+after_script:
     - make goveralls
