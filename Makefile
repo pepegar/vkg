@@ -1,7 +1,5 @@
 SHELL = /bin/bash
 
-packages := ./commands ./config ./config/vkgrc ./utils
-
 test:
 	@go test ./...
 
