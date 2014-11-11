@@ -8,8 +8,6 @@ before_install:
 
 go:
     - 1.3
-    - release
-    - tip
 
 script:
     - make test
