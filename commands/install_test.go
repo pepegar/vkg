@@ -2,7 +2,7 @@ package commands
 
 import "testing"
 
-func TestIsUserRepo(t *testing.T) {
+func TestisUserRepo(t *testing.T) {
 	validUserRepos := []string{
 		"asdf/qwer",
 		"qwer-qwer/qwer",
@@ -16,13 +16,13 @@ func TestIsUserRepo(t *testing.T) {
 	}
 
 	for _, item := range validUserRepos {
-		if !IsUserRepo(item) {
+		if !isUserRepo(item) {
 			t.Errorf("expected %s to be valid user repo but seems to be invalid", item)
 		}
 	}
 
 	for _, item := range inValidUserRepos {
-		if IsUserRepo(item) {
+		if isUserRepo(item) {
 			t.Errorf("expected %s to be invalid user repo but seems to be valid", item)
 		}
 	}
@@ -42,13 +42,13 @@ func TestIsGithubUrl(t *testing.T) {
 	}
 
 	for _, item := range validGithubUrls {
-		if !IsGithubUrl(item) {
+		if !isGithubUrl(item) {
 			t.Errorf("expected %s to be valid github url but seems to be invalid", item)
 		}
 	}
 
 	for _, item := range invalidGithubUrls {
-		if IsGithubUrl(item) {
+		if isGithubUrl(item) {
 			t.Errorf("expected %s to be invalid github url but seems to be valid", item)
 		}
 	}

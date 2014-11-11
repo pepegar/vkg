@@ -14,20 +14,20 @@ import (
 	"github.com/pepegar/vkg/utils"
 )
 
-func IsUserRepo(path string) bool {
+func isUserRepo(path string) bool {
 	match, _ := regexp.MatchString("^[a-z\\-\\.]+\\/[a-z\\-\\.]+$", path)
 
 	return match
 }
 
-func IsGithubUrl(path string) bool {
+func isGithubUrl(path string) bool {
 	match, _ := regexp.MatchString("^github.com\\/[a-z\\-\\.]+\\/[a-z\\-\\.]+$", path)
 
 	return match
 }
 
-func IsVimawesomeSlug(plugin string) bool {
-	return (!IsGithubUrl(plugin) && !IsUserRepo(plugin))
+func isVimawesomeSlug(plugin string) bool {
+	return (!isGithubUrl(plugin) && !isUserRepo(plugin))
 }
 
 func InstallAllVkgrcPlugins(git utils.Giter, vkgConfig config.Config) {
@@ -65,15 +65,15 @@ func InstallPlugin(git utils.Giter, vkgConfig config.Config, plugin string) {
 	var slug string
 	var url string
 
-	if IsUserRepo(plugin) {
+	if isUserRepo(plugin) {
 		parts := strings.Split(plugin, "/")
 		slug = parts[len(parts)-1]
 		url = "https://github.com/" + plugin
-	} else if IsGithubUrl(plugin) {
+	} else if isGithubUrl(plugin) {
 		parts := strings.Split(plugin, "/")
 		slug = parts[len(parts)-1]
 		url = "https://" + plugin
-	} else if IsVimawesomeSlug(plugin) {
+	} else if isVimawesomeSlug(plugin) {
 		jsonUrl := fmt.Sprintf(vkgConfig.VimawesomePluginUrl, plugin)
 		body, requestError := utils.GetJson(jsonUrl)
 
