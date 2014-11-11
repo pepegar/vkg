@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pepegar/vkg.svg?branch=feature%2Ftesting)](https://travis-ci.org/pepegar/vkg)
+[![Build Status](https://travis-ci.org/pepegar/vkg.svg?branch=master)](https://travis-ci.org/pepegar/vkg)
 vkg
 ===
 
