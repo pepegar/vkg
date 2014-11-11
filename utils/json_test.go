@@ -1,9 +1,7 @@
-package commands_test
+package utils
 
 import (
 	"testing"
-
-	"github.com/pepegar/vkg/commands"
 )
 
 func TestParsePluginsList(t *testing.T) {
@@ -21,7 +19,7 @@ func TestParsePluginsList(t *testing.T) {
 	]
 	}`)
 
-	response, parseError := commands.ParsePluginsList(validJson)
+	response, parseError := ParsePluginsList(validJson)
 
 	if parseError != nil {
 		t.Error("parsing a valid json throws an error")
@@ -33,7 +31,7 @@ func TestParsePluginsList(t *testing.T) {
 
 	invalidJson := []byte(`{asdf`)
 
-	_, parseErrorTwo := commands.ParsePluginsList(invalidJson)
+	_, parseErrorTwo := ParsePluginsList(invalidJson)
 	if parseErrorTwo == nil {
 		t.Error("parsing invalid json doesn't throw an error")
 	}

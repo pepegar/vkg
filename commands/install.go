@@ -75,12 +75,12 @@ func InstallPlugin(git utils.Giter, vkgConfig config.Config, plugin string) {
 		url = "https://" + plugin
 	} else if IsVimawesomeSlug(plugin) {
 		jsonUrl := fmt.Sprintf(vkgConfig.VimawesomePluginUrl, plugin)
-		body, requestError := GetJson(jsonUrl)
+		body, requestError := utils.GetJson(jsonUrl)
 
 		if requestError != nil {
 			log.Fatal(vkgConfig.Messages["request_error"])
 		} else {
-			plugin, parseError := ParseSinglePlugin(body)
+			plugin, parseError := utils.ParseSinglePlugin(body)
 
 			if parseError != nil {
 				log.Fatal(parseError)

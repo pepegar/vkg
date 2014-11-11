@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/pepegar/vkg/config"
+	"github.com/pepegar/vkg/utils"
 )
 
 func searchAction(config config.Config) {
@@ -12,13 +13,13 @@ func searchAction(config config.Config) {
 		fmt.Println(config.Messages["provide_plugin_name"])
 	} else {
 		url := fmt.Sprintf(config.VimawesomePluginQueryUrl, os.Args[2])
-		json, jsonError := GetJson(url)
+		json, jsonError := utils.GetJson(url)
 
 		if nil != jsonError {
 			fmt.Println(config.Messages["request_error"])
 		}
 
-		response, parseJsonError := ParsePluginsList(json)
+		response, parseJsonError := utils.ParsePluginsList(json)
 
 		if nil != parseJsonError {
 			fmt.Println(config.Messages["parse_error"])
