@@ -1,4 +1,0 @@
-image: go1.2
-
-script:
-  - make test
