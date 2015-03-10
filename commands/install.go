@@ -30,7 +30,20 @@ func IsVimawesomeSlug(plugin string) bool {
 	return (!IsGithubUrl(plugin) && !IsUserRepo(plugin))
 }
 
+func getPlugin(plugin vkgrc.VkgrcPlugin, wg *sync.WaitGroup, vkgConfig *config.Config) {
+	defer wg.Done()
+
+	cloneError := utils.Git.Clone(plugin.Repository, plugin.Branch)
+
+	if cloneError == nil {
+		fmt.Printf(vkgConfig.Messages["successfully_installed"], plugin.Repository)
+	} else {
+		fmt.Printf(vkgConfig.Messages["plugin_already_installed"], plugin.Repository)
+	}
+}
+
 func installAllVkgrcPlugins() {
+	var wg sync.WaitGroup
 	vkgConfig := config.GetVkgGonfig()
 	vkgrcContents, err := ioutil.ReadFile(vkgConfig.VkgrcPath)
 
@@ -39,62 +52,113 @@ func installAllVkgrcPlugins() {
 	}
 
 	parsedVkgrc := vkgrc.ParseVkgrc(vkgrcContents)
-	var wg sync.WaitGroup
 
 	for _, plugin := range parsedVkgrc.Plugins {
-
 		wg.Add(1)
-
-		go func(plugin vkgrc.VkgrcPlugin) {
-			defer wg.Done()
-
-			cloneError := utils.Git.Clone(plugin.Repository, plugin.Branch)
-
-			if cloneError == nil {
-				fmt.Printf(vkgConfig.Messages["successfully_installed"], plugin.Repository)
-			} else {
-				fmt.Printf(vkgConfig.Messages["plugin_already_installed"], plugin.Repository)
-			}
-		}(plugin)
+		go getPlugin(plugin, &wg, vkgConfig)
 	}
+
 	wg.Wait()
 
 	fmt.Println("all plugins installed")
 }
 
-func installSinglePlugin(plugin string) {
+type Plugin interface {
+	GetSlug() string
+	GetURL() string
+}
+
+type GithubPlugin struct {
+	URL  string
+	Slug string
+}
+
+func (p GithubPlugin) GetSlug() string {
+	return p.Slug
+}
+
+func (p GithubPlugin) GetURL() string {
+	return p.URL
+}
+
+type VimawesomePlugin struct {
+	URL  string
+	Slug string
+}
+
+func (p VimawesomePlugin) GetSlug() string {
+	return p.Slug
+}
+
+func (p VimawesomePlugin) GetURL() string {
+	return p.URL
+}
+
+func newVimawesomePlugin(name string) VimawesomePlugin {
+	var plugin VimawesomePlugin
 	vkgConfig := config.GetVkgGonfig()
-	var slug string
-	var url string
+	jsonUrl := fmt.Sprintf(vkgConfig.VimawesomePluginUrl, name)
+	body, requestError := GetJson(jsonUrl)
 
-	if IsUserRepo(plugin) {
-		parts := strings.Split(plugin, "/")
-		slug = parts[len(parts)-1]
-		url = "https://github.com/" + plugin
-	} else if IsGithubUrl(plugin) {
-		parts := strings.Split(plugin, "/")
-		slug = parts[len(parts)-1]
-		url = "https://" + plugin
-	} else if IsVimawesomeSlug(plugin) {
-		jsonUrl := fmt.Sprintf(vkgConfig.VimawesomePluginUrl, plugin)
-		body, requestError := GetJson(jsonUrl)
+	if requestError != nil {
+		log.Fatal(vkgConfig.Messages["request_error"])
+	} else {
+		plugRecord, parseError := ParseSinglePlugin(body)
 
-		if requestError != nil {
-			log.Fatal(vkgConfig.Messages["request_error"])
+		if parseError != nil {
+			log.Fatal(parseError)
 		} else {
-			plugin, parseError := ParseSinglePlugin(body)
-
-			if parseError != nil {
-				log.Fatal(parseError)
-			} else {
-				url = plugin.GithubUrl
-				slug = plugin.Slug
+			plugin = VimawesomePlugin{
+				URL:  plugRecord.GithubUrl,
+				Slug: plugRecord.Slug,
 			}
 		}
 	}
 
-	if err := utils.Git.Clone(url, "master"); err == nil {
-		fmt.Printf(vkgConfig.Messages["successfully_installed"], slug)
+	return plugin
+}
+
+func newGithubPlugin(name string) GithubPlugin {
+	parts := strings.Split(name, "/")
+
+	plugin := GithubPlugin{
+		Slug: parts[len(parts)-1],
+		URL:  "https://" + name,
+	}
+
+	return plugin
+}
+
+func newUserRepoPlugin(name string) GithubPlugin {
+	parts := strings.Split(name, "/")
+	plugin := GithubPlugin{
+		Slug: parts[len(parts)-1],
+		URL:  "https://github.com/" + name,
+	}
+	return plugin
+}
+
+func newPlugin(name string) Plugin {
+	var plugin Plugin
+
+	if IsUserRepo(name) {
+		plugin = newUserRepoPlugin(name)
+	} else if IsGithubUrl(name) {
+		plugin = newGithubPlugin(name)
+	} else if IsVimawesomeSlug(name) {
+		plugin = newVimawesomePlugin(name)
+	}
+
+	return plugin
+}
+
+func installSinglePlugin(param string) {
+	vkgConfig := config.GetVkgGonfig()
+
+	plugin := newPlugin(param)
+
+	if err := utils.Git.Clone(plugin.GetURL(), "master"); err == nil {
+		fmt.Printf(vkgConfig.Messages["successfully_installed"], plugin.GetSlug())
 	} else {
 		fmt.Println(err)
 	}

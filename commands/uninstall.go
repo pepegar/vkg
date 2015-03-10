@@ -17,7 +17,7 @@ var UninstallCommand = Command{
 			fmt.Println(config.Messages["provide_plugin_name"])
 		} else {
 			pluginName := os.Args[2]
-			pluginPath := config.PluginsPath + pluginName
+			pluginPath := config.PluginsPath + "/" + pluginName
 			if _, err := os.Stat(pluginPath); err == nil {
 				os.RemoveAll(pluginPath)
 				fmt.Printf(config.Messages["successfully_deleted"], pluginName)
