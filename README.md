@@ -1,4 +1,3 @@
-[![Build Status](https://drone.io/github.com/pepegar/vkg/status.png)](https://drone.io/github.com/pepegar/vkg/latest)
 vkg
 ===
 
